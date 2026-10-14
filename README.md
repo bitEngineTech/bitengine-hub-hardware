@@ -1,7 +1,8 @@
 # bitEngine Hub — hardware
 
 Open hardware documentation for the **bitEngine Hub**, a PoE-powered Zigbee 3.0 + Thread gateway
-for Home Assistant with two independent 802.15.4 radios, Ethernet / PoE and Wi-Fi 6 uplinks.
+for Home Assistant with two independent 802.15.4 radios, Ethernet with 802.3af PoE (or USB-C
+5 V power) and a 5 GHz Wi-Fi 6 fallback uplink.
 
 > **Status: pre-release.** Schematics are published at the Crowd Supply campaign launch;
 > see *What is released* below for the exact scope and timing.
@@ -16,6 +17,7 @@ for Home Assistant with two independent 802.15.4 radios, Ethernet / PoE and Wi-F
 flowchart LR
     RJ45[RJ45<br/>Ethernet + 802.3af PoE]
     PD[TMI7321<br/>PoE PD controller]
+    USB[USB-C<br/>5 V]
     BUCK[DC-DC buck<br/>3.3 V]
     ETH[DM9051<br/>SPI 10/100 Ethernet]
     C5[ESP32-C5-WROOM-1U<br/>Wi-Fi 6 2.4/5 GHz + 802.15.4<br/>host MCU]
@@ -26,6 +28,7 @@ flowchart LR
     ANT2((SMA antenna 2<br/>Zigbee))
 
     RJ45 -- "48 V" --> PD --> BUCK
+    USB -- "5 V" --> BUCK
     BUCK -. "3.3 V" .-> C5 & MG24 & ETH & LED
     RJ45 -- "data" --> ETH -- "SPI" --> C5
     C5 <-- "UART / EZSP" --> MG24
@@ -47,7 +50,8 @@ other. Zigbee and Thread therefore never share an antenna or a radio.
 | Zigbee 3.0 radio SoC | Silicon Labs **EFR32MG24B020F1536IM40-B** |
 | Ethernet controller (SPI, 10/100) | Davicom **DM9051** |
 | PoE powered-device controller (IEEE 802.3af) | TMI (Toll Microelectronics) **TMI7321** |
-| Status LEDs | WorldSemi **WS2812B-2020** ×4, with 90° light pipes to the front face |
+| Alternative power input | USB-C, 5 V |
+| Status LEDs | WorldSemi **WS2812B-2020** ×4 (system, Zigbee, Thread, network), with 90° light pipes to the front face |
 | Antenna connectors | SMA ×2 (one per radio) |
 
 No external flash: the ESP32-C5 module's 8 MB flash / 8 MB PSRAM and the MG24's internal 1.5 MB
@@ -79,7 +83,7 @@ after the applicable authorizations are granted.
 
 ## License
 
-Copyright 2026 bitEngine.
+Copyright 2026 bitEngine, Inc.
 
 This hardware documentation is licensed under the **CERN Open Hardware Licence Version 2 —
 Permissive** (CERN-OHL-P-2.0). See [LICENSE](LICENSE). You may use the documentation to make and
