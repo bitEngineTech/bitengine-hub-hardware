@@ -22,7 +22,8 @@ flowchart LR
     MG24[EFR32MG24<br/>Zigbee 3.0 NCP]
     LED[4× WS2812B-2020<br/>RGB status LEDs + light pipes]
     BTN[Tact switch]
-    ANT((4× external antennas<br/>SMA))
+    ANT1((SMA antenna 1<br/>Wi-Fi + Thread))
+    ANT2((SMA antenna 2<br/>Zigbee))
 
     RJ45 -- "48 V" --> PD --> BUCK
     BUCK -. "3.3 V" .-> C5 & MG24 & ETH & LED
@@ -30,12 +31,13 @@ flowchart LR
     C5 <-- "UART / EZSP" --> MG24
     C5 --> LED
     BTN --> C5
-    C5 --- ANT
-    MG24 --- ANT
+    C5 --- ANT1
+    MG24 --- ANT2
 ```
 
-Four external antennas on SMA connectors, so the Zigbee and Thread radios each get their own
-antenna instead of sharing one. The antenna-to-radio assignment is on the schematic.
+Two external antennas on SMA connectors, one per radio: the ESP32-C5 module's single RF path
+(Wi-Fi 2.4 / 5 GHz and the 802.15.4 Thread radio) on one, the EFR32MG24 Zigbee radio on the
+other. Zigbee and Thread therefore never share an antenna or a radio.
 
 ## Main components
 
@@ -46,7 +48,7 @@ antenna instead of sharing one. The antenna-to-radio assignment is on the schema
 | Ethernet controller (SPI, 10/100) | Davicom **DM9051** |
 | PoE powered-device controller (IEEE 802.3af) | TMI (Toll Microelectronics) **TMI7321** |
 | Status LEDs | WorldSemi **WS2812B-2020** ×4, with 90° light pipes to the front face |
-| Antenna connectors | SMA ×4 |
+| Antenna connectors | SMA ×2 (one per radio) |
 
 No external flash: the ESP32-C5 module's 8 MB flash / 8 MB PSRAM and the MG24's internal 1.5 MB
 flash are used.
