@@ -2,57 +2,46 @@
 
 Open hardware documentation for the **bitEngine Hub**, a PoE-powered Zigbee 3.0 + Thread gateway
 for Home Assistant with two independent 802.15.4 radios, Ethernet with 802.3af PoE (or USB-C
-5 V power) and a 5 GHz Wi-Fi 6 fallback uplink.
+5 V power) and 5 GHz Wi-Fi 6 as an alternative uplink.
 
-> **Status: pre-release.** Schematics are published at the Crowd Supply campaign launch;
-> see *What is released* below for the exact scope and timing.
+> **Status: pre-release.** The block diagram and the interface description are published now;
+> schematics follow at the Crowd Supply campaign launch. See *What is released* below for the
+> exact scope and timing.
 
 - Product page: <https://home.bitengine.tech>
 - ESP32-C5 firmware: [bitengine-hub-firmware](https://github.com/bitEngineTech/bitengine-hub-firmware)
 - EFR32MG24 Zigbee NCP: [bitengine-hub-zigbee-ncp](https://github.com/bitEngineTech/bitengine-hub-zigbee-ncp)
 
+## Documentation
+
+- [Block diagram](docs/block-diagram.svg)
+- [Interfaces, indicators and specifications](docs/interfaces.md) — connectors, power input,
+  radios, status LEDs, button, programming access, environmental ratings
+
 ## System overview
 
-```mermaid
-flowchart LR
-    RJ45[RJ45<br/>Ethernet + 802.3af PoE]
-    PD[TMI7321<br/>PoE PD controller]
-    USB[USB-C<br/>5 V]
-    BUCK[DC-DC buck<br/>3.3 V]
-    ETH[DM9051<br/>SPI 10/100 Ethernet]
-    C5[ESP32-C5-WROOM-1U<br/>Wi-Fi 6 2.4/5 GHz + 802.15.4<br/>host MCU]
-    MG24[EFR32MG24<br/>Zigbee 3.0 NCP]
-    LED[4× WS2812B-2020<br/>RGB status LEDs + light pipes]
-    BTN[Tact switch]
-    ANT1((SMA antenna 1<br/>Wi-Fi + Thread))
-    ANT2((SMA antenna 2<br/>Zigbee))
+![bitEngine Hub block diagram](docs/block-diagram.svg)
 
-    RJ45 -- "48 V" --> PD --> BUCK
-    USB -- "5 V" --> BUCK
-    BUCK -. "3.3 V" .-> C5 & MG24 & ETH & LED
-    RJ45 -- "data" --> ETH -- "SPI" --> C5
-    C5 <-- "UART / EZSP" --> MG24
-    C5 --> LED
-    BTN --> C5
-    C5 --- ANT1
-    MG24 --- ANT2
-```
+Two external antennas on RP-SMA connectors, one per radio: **ANT1** serves the EFR32MG24 Zigbee
+radio; **ANT2** serves the ESP32-C5 module's single RF path (the 802.15.4 Thread radio and 5 GHz
+Wi-Fi). Zigbee and Thread therefore never share an antenna or a radio. 2.4 GHz Wi-Fi is present
+in the ESP32-C5 but disabled in firmware, so that band stays clear for Zigbee and Thread.
 
-Two external antennas on SMA connectors, one per radio: the ESP32-C5 module's single RF path
-(Wi-Fi 2.4 / 5 GHz and the 802.15.4 Thread radio) on one, the EFR32MG24 Zigbee radio on the
-other. Zigbee and Thread therefore never share an antenna or a radio.
+Power comes from PoE (TMI7321 PD and DC-DC converter, 48 V to 5 V) or from USB-C 5 V. The two
+5 V sources are diode-OR'ed, with PoE taking priority; a synchronous buck converter supplies
+3.3 V to all ICs, and the 5 V rail feeds the status LEDs.
 
 ## Main components
 
 | Function | Part |
 |---|---|
-| Host MCU, Wi-Fi 6 (2.4 / 5 GHz) + IEEE 802.15.4 (Thread) | Espressif **ESP32-C5-WROOM-1U-N8R8** |
+| Host MCU, Wi-Fi 6 + IEEE 802.15.4 (Thread) | Espressif **ESP32-C5-WROOM-1U-N8R8** (5 GHz Wi-Fi used; 2.4 GHz Wi-Fi and Bluetooth LE present but disabled in firmware) |
 | Zigbee 3.0 radio SoC | Silicon Labs **EFR32MG24B020F1536IM40-B** |
 | Ethernet controller (SPI, 10/100) | Davicom **DM9051** |
-| PoE powered-device controller (IEEE 802.3af) | TMI (Toll Microelectronics) **TMI7321** |
+| PoE powered-device interface + DC-DC converter (IEEE 802.3af) | TMI (Toll Microelectronics) **TMI7321** |
 | Alternative power input | USB-C, 5 V |
-| Status LEDs | WorldSemi **WS2812B-2020** ×4 (system, Zigbee, Thread, network), with 90° light pipes to the front face |
-| Antenna connectors | SMA ×2 (one per radio) |
+| Status LEDs | WorldSemi **WS2812B-2020** ×4 (SYS, ZIGBEE, THREAD, NET), with light pipes |
+| Antenna connectors | RP-SMA female (reverse polarity) ×2: ANT1 Zigbee, ANT2 Thread + Wi-Fi |
 
 No external flash: the ESP32-C5 module's 8 MB flash / 8 MB PSRAM and the MG24's internal 1.5 MB
 flash are used.
@@ -63,14 +52,18 @@ flash are used.
 - Production units use an **aluminum extrusion** enclosure.
 - The 3D-printable enclosure files will be released here so the board can be housed in a
   printed enclosure, or the design modified.
+- Dimensions, mounting details and connector positions will be published with the enclosure
+  files.
 
 ## What is released
 
 | Item | Format | License | When |
 |---|---|---|---|
+| Block diagram | SVG | CERN-OHL-P v2 | Now — [docs/block-diagram.svg](docs/block-diagram.svg) |
+| Interface description (connectors, power, radios, LEDs, button, programming access) | Markdown | CERN-OHL-P v2 | Now — [docs/interfaces.md](docs/interfaces.md) |
 | Schematics | PDF | CERN-OHL-P v2 | Crowd Supply campaign launch |
 | 3D-printable enclosure | STEP / STL | CERN-OHL-P v2 | Campaign launch (planned) |
-| Mechanical outline, connector and programming-interface documentation | PDF / Markdown | CERN-OHL-P v2 | Planned |
+| Mechanical outline (dimensions, mounting, connector and light-pipe positions) | PDF / Markdown | CERN-OHL-P v2 | With the enclosure files |
 
 **Not released initially:** PCB layout source files and Gerbers, and the tooling files for the
 production aluminum extrusion.

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 430" width="960" height="430" font-family="Helvetica, Arial, 'Liberation Sans', 'DejaVu Sans', sans-serif" font-size="13" role="img" aria-labelledby="title desc">
+  <title id="title">bitEngine Hub block diagram</title>
+  <desc id="desc">Functional block diagram. ANT1 (RP-SMA) connects to the EFR32MG24 Zigbee radio; ANT2 (RP-SMA) connects to the ESP32-C5-WROOM-1U (Thread and 5 GHz Wi-Fi). The two chips are linked by a UART carrying EZSP. The ESP32-C5 connects over SPI to a DM9051 Ethernet controller and RJ45 jack with 802.3af PoE, to USB-C, and to four WS2812B status LEDs and a button. Power comes from PoE through a TMI7321 PD and DC-DC converter, or from USB-C 5 V, diode-OR'ed and stepped down to 3.3 V.</desc>
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#555"/>
+    </marker>
+  </defs>
+  <style>
+    .bg  { fill: #ffffff; }
+    .box { fill: #f4f6f8; stroke: #444; stroke-width: 1.4; }
+    .rf  { fill: #eef5ff; }
+    .pwr { fill: #fff7e6; }
+    .ln  { stroke: #444; stroke-width: 1.4; fill: none; }
+    .dsh { stroke: #777; stroke-width: 1.4; fill: none; stroke-dasharray: 6 4; marker-end: url(#arr); }
+    .t   { text-anchor: middle; fill: #111; }
+    .s   { text-anchor: middle; fill: #444; font-size: 11px; }
+    .lbl { fill: #333; font-size: 11px; }
+  </style>
+
+  <!-- background (keeps the diagram readable on dark themes) -->
+  <rect class="bg" x="0" y="0" width="960" height="430"/>
+
+  <!-- antennas -->
+  <rect class="box rf" x="30" y="70" width="140" height="46" rx="6"/>
+  <text class="t" x="100" y="89">ANT1 · RP-SMA</text>
+  <text class="s" x="100" y="106">Zigbee · 2.4 GHz</text>
+  <rect class="box rf" x="30" y="222" width="140" height="62" rx="6"/>
+  <text class="t" x="100" y="241">ANT2 · RP-SMA</text>
+  <text class="s" x="100" y="258">Thread · 2.4 GHz</text>
+  <text class="s" x="100" y="274">Wi-Fi · 5 GHz</text>
+
+  <!-- radios -->
+  <rect class="box rf" x="230" y="50" width="230" height="86" rx="6"/>
+  <text class="t" x="345" y="76" font-weight="bold">EFR32MG24B020</text>
+  <text class="s" x="345" y="96">Zigbee 3.0 NCP · 2.4 GHz · PA 19.5 dBm</text>
+  <text class="s" x="345" y="114">39 MHz crystal</text>
+
+  <rect class="box rf" x="230" y="190" width="230" height="120" rx="6"/>
+  <text class="t" x="345" y="218" font-weight="bold">ESP32-C5-WROOM-1U</text>
+  <text class="s" x="345" y="240">Host MCU · 8 MB flash · 8 MB PSRAM</text>
+  <text class="s" x="345" y="258">Thread 802.15.4 · 2.4 GHz</text>
+  <text class="s" x="345" y="276">Wi-Fi 6 · 5 GHz</text>
+  <text class="s" x="345" y="296">48 MHz crystal (in module)</text>
+
+  <!-- antenna links -->
+  <line class="ln" x1="170" y1="93" x2="230" y2="93"/>
+  <line class="ln" x1="170" y1="253" x2="230" y2="253"/>
+
+  <!-- UART -->
+  <line class="ln" x1="345" y1="136" x2="345" y2="190"/>
+  <text class="lbl" x="352" y="160">UART · EZSP</text>
+  <text class="lbl" x="352" y="175">RTS/CTS flow control</text>
+
+  <!-- right column -->
+  <rect class="box" x="560" y="140" width="190" height="66" rx="6"/>
+  <text class="t" x="655" y="163">DM9051</text>
+  <text class="s" x="655" y="181">10/100 Ethernet (MAC + PHY)</text>
+  <text class="s" x="655" y="197">25 MHz crystal</text>
+
+  <rect class="box" x="800" y="140" width="130" height="66" rx="6"/>
+  <text class="t" x="865" y="168">RJ45</text>
+  <text class="s" x="865" y="188">PoE 802.3af</text>
+
+  <rect class="box" x="560" y="230" width="190" height="46" rx="6"/>
+  <text class="t" x="655" y="249">USB-C</text>
+  <text class="s" x="655" y="266">5 V in · USB Serial/JTAG</text>
+
+  <rect class="box" x="560" y="300" width="190" height="46" rx="6"/>
+  <text class="t" x="655" y="319">WS2812B LED ×4 · button</text>
+  <text class="s" x="655" y="336">SYS · ZIGBEE · THREAD · NET</text>
+
+  <polyline class="ln" points="460,200 510,200 510,173 560,173"/>
+  <text class="lbl" x="470" y="194">SPI</text>
+  <line class="ln" x1="750" y1="173" x2="800" y2="173"/>
+  <line class="ln" x1="460" y1="253" x2="560" y2="253"/>
+  <polyline class="ln" points="460,300 510,300 510,323 560,323"/>
+
+  <!-- power -->
+  <rect class="box pwr" x="230" y="360" width="500" height="50" rx="6"/>
+  <text class="t" x="480" y="381">Power: TMI7321 PoE PD 48 V → 5 V | USB-C 5 V | diode OR-ing</text>
+  <text class="s" x="480" y="400">Synchronous buck → 3.3 V for all ICs; 5 V rail feeds the LEDs</text>
+
+  <polyline class="dsh" points="865,206 865,385 730,385"/>
+  <text class="lbl" x="872" y="300">48 V PoE</text>
+  <polyline class="dsh" points="750,253 775,253 775,395 730,395"/>
+  <text class="lbl" x="781" y="320">5 V</text>
+</svg>
