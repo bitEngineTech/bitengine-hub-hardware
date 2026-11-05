@@ -5,7 +5,7 @@ for Home Assistant with two independent 802.15.4 radios, Ethernet with 802.3af P
 5 V power) and 5 GHz Wi-Fi 6 as an alternative uplink.
 
 > **Status: pre-release.** The block diagram and the interface description are published now;
-> schematics follow at the Crowd Supply campaign launch. See *What is released* below for the
+> schematics follow at the crowdfunding campaign launch. See *What is released* below for the
 > exact scope and timing.
 
 - Product page: <https://home.bitengine.tech>
@@ -61,7 +61,7 @@ flash are used.
 |---|---|---|---|
 | Block diagram | SVG | CERN-OHL-P v2 | Now — [docs/block-diagram.svg](docs/block-diagram.svg) |
 | Interface description (connectors, power, radios, LEDs, button, programming access) | Markdown | CERN-OHL-P v2 | Now — [docs/interfaces.md](docs/interfaces.md) |
-| Schematics | PDF | CERN-OHL-P v2 | Crowd Supply campaign launch |
+| Schematics | PDF | CERN-OHL-P v2 | Campaign launch |
 | 3D-printable enclosure | STEP / STL | CERN-OHL-P v2 | Campaign launch (planned) |
 | Mechanical outline (dimensions, mounting, connector and light-pipe positions) | PDF / Markdown | CERN-OHL-P v2 | With the enclosure files |
 
